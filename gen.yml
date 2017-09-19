@@ -1,0 +1,4 @@
+---
+language: js
+sourcePath: lib
+testPath: spec
