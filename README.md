@@ -82,6 +82,7 @@ client.execute(request).then((response) => {
 ```
 
 If you're migrating from v1, check out our [Migration Guide](./docs/Migrating.md).
+We have tried to answer few obvious questions at [FAQs](./docs/FAQ.md).
 
 ## Building
 
