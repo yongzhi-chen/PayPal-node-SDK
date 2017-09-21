@@ -4,7 +4,7 @@ configatron.product_name = "paypal-rest-sdk"
 
 # Custom validations
 def test
-  CommandProcess.command('npm install; npm test', live_output=true)
+  CommandProcessor.command('npm install; npm test', live_output=true)
 end
 
 def package_version
