@@ -35,7 +35,8 @@
   },
   "license": "MIT",
   "scripts": {
+    "test:unit": "mocha spec/unit --recursive -r spec/spec_helper",
     "test:integration": "mocha spec --recursive --timeout 15000",
-    "test": "npm run test:integration"
+    "test": "npm run test:unit"
   }
 }
