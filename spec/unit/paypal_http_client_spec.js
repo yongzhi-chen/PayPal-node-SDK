@@ -2,8 +2,7 @@
 
 const paypal = require('../../lib/lib');
 const nock = require('nock');
-const clients = require('../../lib/core/clients');
-const TokenStatus = require("../../lib/core/token_status");
+const TokenCache = require('../../lib/core/token_cache');
 
 describe('PayPalHttpClient', function () {
   let environment = new paypal.SandboxEnvironment('clientId', 'clientSecret');
@@ -39,9 +38,8 @@ describe('PayPalHttpClient', function () {
   }
 
   function clearToken() {
-    const client = clients.fromEnvironment(environment);
+    const client = TokenCache.cacheForEnvironment(environment);
     client.setToken(null);
-    client.setStatus(TokenStatus.absent)
   }
 
 
@@ -93,12 +91,41 @@ describe('PayPalHttpClient', function () {
 
       let accessTokenNock = nockAccessTokenRequest(this.context);
 
-      expect(this.http.client.getToken()).not.to.exist();
+      expect(this.http._cache.getToken()).not.to.exist();
       return this.http.execute(request).then((resp) => {
-        expect(this.http.client.getToken()).to.exist();
+        expect(this.http._cache.getToken()).to.exist();
         expect(resp.result.some_data).to.equal('some_value');
         expect(requestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
+      });
+    });
+
+    it('does not fetch access token if authorization header set by request', function() {
+      let request = {
+        path: '/',
+        verb: 'GET',
+        headers: {
+          Authorization: 'custom authorization header'
+        }
+      };
+
+      let expectedHeader = {
+        reqheaders: {
+          authorization: 'custom authorization header'
+        }
+      };
+
+      let requestNock = nock(environment.baseUrl, expectedHeader).get('/').times(1).reply(200, function (uri, body) {
+        return JSON.stringify({some_data: 'some_value'});
+      }, {
+        'Content-Type': 'application/json'
+      });
+
+      expect(this.http._cache.getToken()).to.not.exist();
+      return this.http.execute(request).then((resp) => {
+        let customToken = this.http._cache.getToken();
+        expect(customToken).to.not.exist();
+        expect(resp.result.some_data).to.equal('some_value');
       });
     });
 
@@ -117,13 +144,13 @@ describe('PayPalHttpClient', function () {
 
       let accessTokenNock = nockAccessTokenRequest(this.context);
 
-      expect(this.http.client.getToken()).to.not.exist();
+      expect(this.http._cache.getToken()).to.not.exist();
       return this.http.execute(request).then((resp) => {
-        prevToken = this.http.client.getToken();
+        prevToken = this.http._cache.getToken();
         expect(prevToken).to.exist();
         expect(resp.result.some_data).to.equal('some_value');
         return this.http.execute(request).then((resp) => {
-          expect(this.http.client.getToken()).to.equal(prevToken);
+          expect(this.http._cache.getToken()).to.equal(prevToken);
           expect(resp.result.some_data).to.equal('some_value');
           expect(requestNock.isDone()).to.be.true();
           expect(accessTokenNock.isDone()).to.be.true();
@@ -145,9 +172,9 @@ describe('PayPalHttpClient', function () {
 
       let accessTokenNock = nockAccessTokenRequest(this.context);
 
-      expect(this.http.client.getToken()).to.not.exist();
-      this.http.client.setToken(createToken(true));
-      expect(this.http.client.getToken().isExpired()).to.be.true();
+      expect(this.http._cache.getToken()).to.not.exist();
+      this.http._cache.setToken(createToken(true));
+      expect(this.http._cache.getToken().isExpired()).to.be.true();
       return this.http.execute(request).then((resp) => {
         expect(resp.result.some_data).to.equal('some_value');
         expect(requestNock.isDone()).to.be.true();
@@ -169,18 +196,18 @@ describe('PayPalHttpClient', function () {
 
       let refreshTokenNock = nockAccessTokenRequest(this.context, 1, true, 'refresh-token');
 
-      expect(this.http.client.getToken()).to.not.exist();
-      this.http.client.setToken(createToken(true, true));
-      expect(this.http.client.getToken().isExpired()).to.be.true();
+      expect(this.http._cache.getToken()).to.not.exist();
+      this.http._cache.setToken(createToken(true, true));
+      expect(this.http._cache.getToken().isExpired()).to.be.true();
       return this.http.execute(request).then((resp) => {
-        expect(this.http.client.getToken()).to.exist();
+        expect(this.http._cache.getToken()).to.exist();
         expect(refreshTokenNock.isDone()).to.be.true();
         expect(requestNock.isDone()).to.be.true();
         expect(resp.result.some_data).to.equal('some_value');
       });
     });
 
-    it('combines requests and refreshes tokens once before the call', function () {
+    it('synchronizes access token requests for the same client', function () {
       let request = {
         path: '/',
         verb: 'GET'
@@ -191,16 +218,17 @@ describe('PayPalHttpClient', function () {
       }, {
         'Content-Type': 'application/json'
       });
+
       let accessTokenNock = nockAccessTokenRequest(this.context);
 
-      expect(this.http.client.getToken()).to.not.exist();
-      this.http.client.setToken(createToken(true, true));
-      expect(this.http.client.getToken().isExpired()).to.be.true();
+      expect(this.http._cache.getToken()).to.not.exist();
+      this.http._cache.setToken(createToken(true, true));
+      expect(this.http._cache.getToken().isExpired()).to.be.true();
       return Promise.all([
         this.http.execute(request),
         this.http.execute(request),
       ]).then((values) => {
-        expect(this.http.client.getToken()).to.exist();
+        expect(this.http._cache.getToken()).to.exist();
         expect(requestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
         expect(values[0].result.some_data).to.equal('some_value');
@@ -208,63 +236,64 @@ describe('PayPalHttpClient', function () {
       })
     });
 
-    it('combines requests and retries them when they fail requesting tokens once', function () {
+    it('synchronizes access token requests for clients with the same environment', function () {
       let request = {
         path: '/',
         verb: 'GET'
       };
 
-      let failedRequestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(401);
-      let successfulRequestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
+      let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
         return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
+
       let accessTokenNock = nockAccessTokenRequest(this.context);
 
-      expect(this.http.client.getToken()).to.not.exist();
-      this.http.client.setToken(createToken(false, true));
-      expect(this.http.client.getToken().isExpired()).to.be.false();
+      let env = new paypal.SandboxEnvironment('clientId', 'clientSecret');
+      let otherHttp = new paypal.PayPalHttpClient(env);
+
+      expect(this.http._cache.getToken()).to.not.exist();
+      this.http._cache.setToken(createToken(true, true));
+      expect(this.http._cache.getToken().isExpired()).to.be.true();
       return Promise.all([
         this.http.execute(request),
-        this.http.execute(request),
+        otherHttp.execute(request),
       ]).then((values) => {
-        expect(this.http.client.getToken()).to.exist();
-        expect(failedRequestNock.isDone()).to.be.true();
-        expect(successfulRequestNock.isDone()).to.be.true();
+        expect(this.http._cache.getToken()).to.exist();
+        expect(requestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
         expect(values[0].result.some_data).to.equal('some_value');
         expect(values[1].result.some_data).to.equal('some_value');
       })
     });
 
-    it('combines requests from different clients refreshing tokens only when required', function () {
+    it('does not synchronize access token requests for clients with different environments', function () {
       let request = {
         path: '/',
         verb: 'GET'
       };
 
-      let failedRequestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(401);
       let successfulRequestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
         return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
+
       let accessTokenNock = nockAccessTokenRequest(this.context, 2);
 
-      expect(this.http.client.getToken()).to.not.exist();
-      expect(this.http2.client.getToken()).to.not.exist();
-      this.http.client.setToken(createToken(false, true));
-      this.http2.client.setToken(createToken(false, true));
-      expect(this.http.client.getToken().isExpired()).to.be.false();
-      expect(this.http2.client.getToken().isExpired()).to.be.false();
+      expect(this.http._cache.getToken()).to.not.exist();
+      expect(this.http2._cache.getToken()).to.not.exist();
+      this.http._cache.setToken(createToken(true, true));
+      this.http2._cache.setToken(createToken(true, true));
+      expect(this.http._cache.getToken().isExpired()).to.be.true();
+      expect(this.http2._cache.getToken().isExpired()).to.be.true();
       return Promise.all([
         this.http.execute(request),
         this.http2.execute(request),
       ]).then((values) => {
-        expect(this.http.client.getToken()).to.exist();
-        expect(this.http2.client.getToken()).to.exist();
-        expect(failedRequestNock.isDone()).to.be.true();
+        expect(this.http._cache.getToken()).to.exist();
+        expect(this.http2._cache.getToken()).to.exist();
         expect(successfulRequestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
         expect(values[0].result.some_data).to.equal('some_value');
