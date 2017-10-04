@@ -5,7 +5,7 @@ let dirtyChai = require('dirty-chai');
 
 chai.use(dirtyChai);
 
-chai.Assertion.includeStack = true;
+chai.config.includeStack = true;
 
 global.assert = chai.assert;
 global.expect = chai.expect;
