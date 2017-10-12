@@ -301,6 +301,31 @@ describe('PayPalHttpClient', function () {
       });
     });
 
+    it('retries authorization calls once on 401 error', function () {
+      this.context.post('/v1/oauth2/token').times(2).reply(function (uri, requestBody) {
+        return [
+          401,
+          'there was an error fetching your access token',
+          {}
+        ];
+      });
+
+      let request = {
+        verb: 'GET',
+        path: '/',
+      };
+
+      let requestNock = this.context.get('/').times(1).reply(200);
+
+      return this.http.execute(request).then((res) => {
+        expect().fail('should have failed with 401 error');
+      })
+      .catch((err) => {
+        expect(err.statusCode).to.equal(401);
+        expect(err.message).to.equal('there was an error fetching your access token');
+      })
+    });
+
     it('sets Accept-Encoding header to gzip', function () {
       let request = {
         path: '/',
