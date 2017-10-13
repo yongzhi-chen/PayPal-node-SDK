@@ -84,7 +84,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -100,7 +100,7 @@ describe('PayPalHttpClient', function () {
       });
     });
 
-    it('does not fetch access token if authorization header set by request', function() {
+    it('does not fetch access token if authorization header set by request', function () {
       let request = {
         path: '/',
         verb: 'GET',
@@ -116,7 +116,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, expectedHeader).get('/').times(1).reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -125,6 +125,7 @@ describe('PayPalHttpClient', function () {
       return this.http.execute(request).then((resp) => {
         let customToken = this.http._cache.getToken();
         expect(customToken).to.not.exist();
+        expect(requestNock.isDone()).to.be.true();
         expect(resp.result.some_data).to.equal('some_value');
       });
     });
@@ -137,7 +138,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -165,7 +166,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -189,7 +190,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authRefreshHeader).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -214,7 +215,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -243,7 +244,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -275,7 +276,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let successfulRequestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
@@ -301,7 +302,33 @@ describe('PayPalHttpClient', function () {
       });
     });
 
-    it('retries authorization calls once on 401 error', function () {
+    it('retries calls on authorization errors', function () {
+      let request = {
+        verb: 'GET',
+        path: '/',
+      };
+
+      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let rejectionNock = this.context.get('/').times(2).reply(401);
+      let requestNock = this.context.get('/').times(2).reply(200, () => JSON.stringify({ some_data: 'some_value' }), {
+        'Content-Type': 'application/json'
+      });
+
+      this.http._cache.setToken(createToken(false, false));
+      return Promise.all([
+        this.http.execute(request),
+        this.http.execute(request)
+      ]).then((results) => {
+        expect(accessTokenNock.isDone()).to.be.true();
+        expect(rejectionNock.isDone()).to.be.true();
+        expect(requestNock.isDone()).to.be.true();
+        results.forEach((res) => {
+          expect(res.result.some_data).to.equal('some_value');
+        });
+      });
+    });
+
+    it('retries authorization calls on 401 errors only once', function () {
       this.context.post('/v1/oauth2/token').times(2).reply(function (uri, requestBody) {
         return [
           401,
@@ -319,8 +346,9 @@ describe('PayPalHttpClient', function () {
 
       return this.http.execute(request).then((res) => {
         expect().fail('should have failed with 401 error');
-      })
-      .catch((err) => {
+      }).catch((err) => {
+        expect(requestNock.isDone()).to.be.false();
+        expect(requestNock.pendingMocks()).to.have.length(1);
         expect(err.statusCode).to.equal(401);
         expect(err.message).to.equal('there was an error fetching your access token');
       })
@@ -337,7 +365,7 @@ describe('PayPalHttpClient', function () {
           'accept-encoding': 'gzip'
         }
       }).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({some_data: 'some_value'});
+        return JSON.stringify({ some_data: 'some_value' });
       }, {
         'Content-Type': 'application/json'
       });
