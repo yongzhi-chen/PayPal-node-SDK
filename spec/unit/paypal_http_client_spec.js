@@ -84,7 +84,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -116,7 +116,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, expectedHeader).get('/').times(1).reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -138,7 +138,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -166,7 +166,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -190,7 +190,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authRefreshHeader).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -215,7 +215,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -244,7 +244,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -276,7 +276,7 @@ describe('PayPalHttpClient', function () {
       };
 
       let successfulRequestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
@@ -310,7 +310,7 @@ describe('PayPalHttpClient', function () {
 
       let accessTokenNock = nockAccessTokenRequest(this.context);
       let rejectionNock = this.context.get('/').times(2).reply(401);
-      let requestNock = this.context.get('/').times(2).reply(200, () => JSON.stringify({ some_data: 'some_value' }), {
+      let requestNock = this.context.get('/').times(2).reply(200, () => JSON.stringify({some_data: 'some_value'}), {
         'Content-Type': 'application/json'
       });
 
@@ -365,7 +365,7 @@ describe('PayPalHttpClient', function () {
           'accept-encoding': 'gzip'
         }
       }).get('/').reply(200, function (uri, body) {
-        return JSON.stringify({ some_data: 'some_value' });
+        return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
