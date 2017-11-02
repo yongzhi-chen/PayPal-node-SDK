@@ -13,23 +13,25 @@ describe('PayPalHttpClient', function () {
     this.http = new paypal.PayPalHttpClient(environment);
     this.http2 = new paypal.PayPalHttpClient(env2);
     this.context = nock(environment.baseUrl);
+    nock.cleanAll();
   });
 
   afterEach(() => nock.cleanAll());
 
-  function nockAccessTokenRequest(context, times, refreshTokenResponse, refreshTokenValue) {
-    let accessTokenValue = refreshTokenResponse ? 'access-token-from-refresh-token' : 'simple-access-token';
+  function mockAccessTokenRequest(context, options) {
+    options = options || {};
 
-    times = times ? times : 1;
+    let accessTokenValue = options.refreshTokenResponse ? 'access-token-from-refresh-token' : 'simple-access-token';
+    let times = options.times || 1;
 
     return context.post('/v1/oauth2/token').times(times).reply(200, function (uri, requestBody) {
       const token = {
         access_token: accessTokenValue,
-        expires_in: 3600,
+        expires_in: options.expiresIn || 3600,
         token_type: 'Bearer'
       };
-      if (refreshTokenValue) {
-        token.refresh_token = refreshTokenValue;
+      if (options.refreshTokenValue) {
+        token.refresh_token = options.refreshTokenValue;
       }
       return token;
     }, {
@@ -89,18 +91,16 @@ describe('PayPalHttpClient', function () {
         'Content-Type': 'application/json'
       });
 
-      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let accessTokenNock = mockAccessTokenRequest(this.context);
 
-      expect(this.http._cache.getToken()).not.to.exist();
       return this.http.execute(request).then((resp) => {
-        expect(this.http._cache.getToken()).to.exist();
         expect(resp.result.some_data).to.equal('some_value');
         expect(requestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
       });
     });
 
-    it('does not fetch access token if authorization header set by request', function () {
+    it('does not fetch access token if authorization header is already set on request', function () {
       let request = {
         path: '/',
         verb: 'GET',
@@ -130,7 +130,7 @@ describe('PayPalHttpClient', function () {
       });
     });
 
-    it('does not fetch access token if not expired and valid', function () {
+    it('does not fetch access token if not expired and still valid', function () {
       let prevToken;
       let request = {
         path: '/',
@@ -143,15 +143,11 @@ describe('PayPalHttpClient', function () {
         'Content-Type': 'application/json'
       });
 
-      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let accessTokenNock = mockAccessTokenRequest(this.context, {times: 1});
 
-      expect(this.http._cache.getToken()).to.not.exist();
       return this.http.execute(request).then((resp) => {
-        prevToken = this.http._cache.getToken();
-        expect(prevToken).to.exist();
         expect(resp.result.some_data).to.equal('some_value');
         return this.http.execute(request).then((resp) => {
-          expect(this.http._cache.getToken()).to.equal(prevToken);
           expect(resp.result.some_data).to.equal('some_value');
           expect(requestNock.isDone()).to.be.true();
           expect(accessTokenNock.isDone()).to.be.true();
@@ -165,46 +161,47 @@ describe('PayPalHttpClient', function () {
         verb: 'GET'
       };
 
-      let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').reply(200, function (uri, body) {
+      let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
         return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
 
-      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let accessTokenNock = mockAccessTokenRequest(this.context, {
+        expiresIn: -1,
+        times: 2
+      });
 
-      expect(this.http._cache.getToken()).to.not.exist();
-      this.http._cache.setToken(createToken(true));
-      expect(this.http._cache.getToken().isExpired()).to.be.true();
-      return this.http.execute(request).then((resp) => {
-        expect(resp.result.some_data).to.equal('some_value');
-        expect(requestNock.isDone()).to.be.true();
-        expect(accessTokenNock.isDone()).to.be.true();
+      return this.http.execute(request).then(() => {
+        this.http.execute(request).then(() => {
+          expect(accessTokenNock.isDone()).to.be.true();
+        });
       });
     });
 
-    it('fetches a new token using a refresh token if expired', function () {
+    it('fetches a new access token using a refresh token if expired', function () {
       let request = {
         path: '/',
         verb: 'GET'
       };
 
-      let requestNock = nock(environment.baseUrl, authRefreshHeader).get('/').reply(200, function (uri, body) {
+      let requestNock = nock(environment.baseUrl, authRefreshHeader).get('/').times(2).reply(200, function (uri, body) {
         return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
 
-      let refreshTokenNock = nockAccessTokenRequest(this.context, 1, true, 'refresh-token');
+      let refreshTokenNock = mockAccessTokenRequest(this.context, {
+        times: 2,
+        refreshTokenResponse: true,
+        refreshTokenValue: 'refresh-token'
+      });
 
-      expect(this.http._cache.getToken()).to.not.exist();
-      this.http._cache.setToken(createToken(true, true));
-      expect(this.http._cache.getToken().isExpired()).to.be.true();
-      return this.http.execute(request).then((resp) => {
-        expect(this.http._cache.getToken()).to.exist();
-        expect(refreshTokenNock.isDone()).to.be.true();
-        expect(requestNock.isDone()).to.be.true();
-        expect(resp.result.some_data).to.equal('some_value');
+      return this.http.execute(request).then(() => {
+        this.http.execute(request).then(() => {
+          expect(refreshTokenNock.isDone()).to.be.true();
+          expect(requestNock.isDone()).to.be.true();
+        });
       });
     });
 
@@ -220,56 +217,41 @@ describe('PayPalHttpClient', function () {
         'Content-Type': 'application/json'
       });
 
-      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let accessTokenNock = mockAccessTokenRequest(this.context, {times: 1});
 
-      expect(this.http._cache.getToken()).to.not.exist();
-      this.http._cache.setToken(createToken(true, true));
-      expect(this.http._cache.getToken().isExpired()).to.be.true();
       return Promise.all([
         this.http.execute(request),
         this.http.execute(request),
       ]).then((values) => {
-        expect(this.http._cache.getToken()).to.exist();
         expect(requestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
-        expect(values[0].result.some_data).to.equal('some_value');
-        expect(values[1].result.some_data).to.equal('some_value');
       })
     });
 
-    it('synchronizes access token requests for clients with the same environment', function () {
+    it('synchronizes access token requests for clients with the same credentials', function () {
       let request = {
         path: '/',
         verb: 'GET'
       };
-
       let requestNock = nock(environment.baseUrl, authTokenHeader).get('/').times(2).reply(200, function (uri, body) {
         return JSON.stringify({some_data: 'some_value'});
       }, {
         'Content-Type': 'application/json'
       });
+      let accessTokenNock = mockAccessTokenRequest(this.context, {times: 1});
 
-      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let otherHttp = new paypal.PayPalHttpClient(environment);
 
-      let env = new paypal.SandboxEnvironment('clientId', 'clientSecret');
-      let otherHttp = new paypal.PayPalHttpClient(env);
-
-      expect(this.http._cache.getToken()).to.not.exist();
-      this.http._cache.setToken(createToken(true, true));
-      expect(this.http._cache.getToken().isExpired()).to.be.true();
       return Promise.all([
         this.http.execute(request),
         otherHttp.execute(request),
       ]).then((values) => {
-        expect(this.http._cache.getToken()).to.exist();
         expect(requestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
-        expect(values[0].result.some_data).to.equal('some_value');
-        expect(values[1].result.some_data).to.equal('some_value');
       })
     });
 
-    it('does not synchronize access token requests for clients with different environments', function () {
+    it('does not synchronize access token requests for clients with different credentials', function () {
       let request = {
         path: '/',
         verb: 'GET'
@@ -280,25 +262,14 @@ describe('PayPalHttpClient', function () {
       }, {
         'Content-Type': 'application/json'
       });
+      let accessTokenNock = mockAccessTokenRequest(this.context, {times: 2});
 
-      let accessTokenNock = nockAccessTokenRequest(this.context, 2);
-
-      expect(this.http._cache.getToken()).to.not.exist();
-      expect(this.http2._cache.getToken()).to.not.exist();
-      this.http._cache.setToken(createToken(true, true));
-      this.http2._cache.setToken(createToken(true, true));
-      expect(this.http._cache.getToken().isExpired()).to.be.true();
-      expect(this.http2._cache.getToken().isExpired()).to.be.true();
       return Promise.all([
         this.http.execute(request),
         this.http2.execute(request),
       ]).then((values) => {
-        expect(this.http._cache.getToken()).to.exist();
-        expect(this.http2._cache.getToken()).to.exist();
         expect(successfulRequestNock.isDone()).to.be.true();
         expect(accessTokenNock.isDone()).to.be.true();
-        expect(values[0].result.some_data).to.equal('some_value');
-        expect(values[1].result.some_data).to.equal('some_value');
       });
     });
 
@@ -308,13 +279,12 @@ describe('PayPalHttpClient', function () {
         path: '/',
       };
 
-      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let accessTokenNock = mockAccessTokenRequest(this.context, {times: 2});
       let rejectionNock = this.context.get('/').times(2).reply(401);
       let requestNock = this.context.get('/').times(2).reply(200, () => JSON.stringify({some_data: 'some_value'}), {
         'Content-Type': 'application/json'
       });
 
-      this.http._cache.setToken(createToken(false, false));
       return Promise.all([
         this.http.execute(request),
         this.http.execute(request)
@@ -370,7 +340,7 @@ describe('PayPalHttpClient', function () {
         'Content-Type': 'application/json'
       });
 
-      let accessTokenNock = nockAccessTokenRequest(this.context);
+      let accessTokenNock = mockAccessTokenRequest(this.context);
 
       expect(this.http.accessToken).to.not.exist();
       return this.http.execute(request).then((resp) => {
