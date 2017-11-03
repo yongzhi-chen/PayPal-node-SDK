@@ -22,7 +22,7 @@
     "node": ">=4"
   },
   "dependencies": {
-    "braintreehttp": "0.1.1"
+    "braintreehttp": "0.2.1"
   },
   "devDependencies": {
     "chai": "^4.0.2",
