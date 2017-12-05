@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const TemplateDeleteRequest = require('../../../lib/lib').TemplateDeleteRequest;
+const TemplateDeleteRequest = require('../../../lib/paypalrestsdk').TemplateDeleteRequest;
 const TemplateCreate = require('./templateCreateRequestTest').TemplateCreate;
 
 describe('TemplateDeleteRequest', function () {

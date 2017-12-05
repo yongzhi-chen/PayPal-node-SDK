@@ -1,8 +1,7 @@
 'use strict';
 
-const paypal = require('../../lib/lib');
+const paypal = require('../../lib/paypalrestsdk');
 const nock = require('nock');
-const TokenCache = require('../../lib/core/token_cache');
 
 describe('PayPalHttpClient', function () {
   let environment = new paypal.SandboxEnvironment('clientId', 'clientSecret');
@@ -40,10 +39,9 @@ describe('PayPalHttpClient', function () {
   }
 
   function clearToken() {
-    const client = TokenCache.cacheForEnvironment(environment);
+    const client = paypal.TokenCache.cacheForEnvironment(environment);
     client.setToken(null);
   }
-
 
   function createToken(expired, refresh) {
     const token = new paypal.AccessToken({

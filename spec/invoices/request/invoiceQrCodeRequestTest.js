@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const InvoiceQrCodeRequest = require('../../../lib/lib').InvoiceQrCodeRequest;
+const InvoiceQrCodeRequest = require('../../../lib/paypalrestsdk').InvoiceQrCodeRequest;
 const InvoiceCreate = require('./invoiceCreateRequestTest').InvoiceCreate;
 
 describe('InvoiceQrCodeRequest', function () {

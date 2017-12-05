@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const TemplateGetRequest = require('../../../lib/lib').TemplateGetRequest;
+const TemplateGetRequest = require('../../../lib/paypalrestsdk').TemplateGetRequest;
 const TemplateCreate = require('./templateCreateRequestTest').TemplateCreate;
 
 describe('TemplateGetRequest', function () {

@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const InvoiceRecordPaymentRequest = require('../../../lib/lib').InvoiceRecordPaymentRequest;
+const InvoiceRecordPaymentRequest = require('../../../lib/paypalrestsdk').InvoiceRecordPaymentRequest;
 const InvoiceCreate = require('./invoiceCreateRequestTest').InvoiceCreate;
 const InvoiceSend = require('./invoiceSendRequestTest').InvoiceSend;
 

@@ -1,4 +1,5 @@
 ---
-language: js
+language: nodejs
 sourcePath: lib
 testPath: spec
+projectName: paypalrestsdk

@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const InvoiceGetAllRequest = require('../../../lib/lib').InvoiceGetAllRequest;
+const InvoiceGetAllRequest = require('../../../lib/paypalrestsdk').InvoiceGetAllRequest;
 
 
 describe('InvoiceGetAllRequest', function () {

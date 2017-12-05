@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const InvoiceDeleteExternalRefundRequest = require('../../../lib/lib').InvoiceDeleteExternalRefundRequest;
+const InvoiceDeleteExternalRefundRequest = require('../../../lib/paypalrestsdk').InvoiceDeleteExternalRefundRequest;
 const InvoiceCreate = require('./invoiceCreateRequestTest').InvoiceCreate;
 const InvoiceRecordRefund = require('./invoiceRecordRefundRequestTest').InvoiceRecordRefund;
 const InvoiceGet = require('./invoiceGetRequestTest').InvoiceGet;

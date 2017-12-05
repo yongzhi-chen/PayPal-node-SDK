@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const InvoiceCreateRequest = require('../../../lib/lib').InvoiceCreateRequest;
+const InvoiceCreateRequest = require('../../../lib/paypalrestsdk').InvoiceCreateRequest;
 
 function buildRequestBody() {
 	return {
@@ -80,7 +80,7 @@ describe('InvoiceCreateRequest', function () {
     return invoiceCreate().then(function(r) {
 			chai.assert.equal(r.statusCode, 201);
 			chai.assert.isNotNull(r.result);
-		});
+    });
 	});
 });
 
