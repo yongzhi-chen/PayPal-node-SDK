@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const CaptureGetRequest = require('../../../lib/lib').CaptureGetRequest;
+const CaptureGetRequest = require('../../../lib/paypalrestsdk').CaptureGetRequest;
 const AuthorizationCapture = require('./authorizationCaptureRequestTest').AuthorizationCapture;
 
 describe('CaptureGetRequest', function () {

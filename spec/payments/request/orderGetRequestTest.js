@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const OrderGetRequest = require('../../../lib/lib').OrderGetRequest;
+const OrderGetRequest = require('../../../lib/paypalrestsdk').OrderGetRequest;
 
 const FAKE_ID = 'O-2FK09787H36911800';
 

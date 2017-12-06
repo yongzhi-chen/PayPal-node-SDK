@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const OrderVoidRequest = require('../../../lib/lib').OrderVoidRequest;
+const OrderVoidRequest = require('../../../lib/paypalrestsdk').OrderVoidRequest;
 const FAKE_ID = require('./orderGetRequestTest').FAKE_ID;
 
 describe('OrderVoidRequest', function () {

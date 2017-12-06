@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const RefundGetRequest = require('../../../lib/lib').RefundGetRequest;
+const RefundGetRequest = require('../../../lib/paypalrestsdk').RefundGetRequest;
 const PaymentCreate = require('./paymentCreateRequestTest').PaymentCreate;
 const SaleRefund = require('./saleRefundRequestTest').SaleRefund;
 

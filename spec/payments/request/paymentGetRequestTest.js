@@ -8,7 +8,7 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const PaymentGetRequest = require('../../../lib/lib').PaymentGetRequest;
+const PaymentGetRequest = require('../../../lib/paypalrestsdk').PaymentGetRequest;
 const PaymentCreate = require('./paymentCreateRequestTest').PaymentCreate;
 
 describe('PaymentGetRequest', function () {
