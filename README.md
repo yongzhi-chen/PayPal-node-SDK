@@ -1,8 +1,6 @@
 # PayPal SDK 2.0.0-beta
 
 This is a preview of how PayPal SDKs will look in the next major version. We've simplified the interface to only provide HTTPRequest that can easily be called via our HttpClient.
-This repo currently only contains functionality for working with [Payments](https://developer.paypal.com/docs/api/payments/) and [Invoicing](https://developer.paypal.com/docs/api/invoicing/).
-to serve as an example and early beta of the API going forward.
 
 ### Creating a Payment
 
