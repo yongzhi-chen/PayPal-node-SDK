@@ -36,10 +36,11 @@
   "license": "MIT",
   "scripts": {
     "test:unit": "mocha spec/unit --recursive -r spec/spec_helper",
-    "test:integration": "mocha spec --recursive --timeout 15000",
-    "test:payments": "mocha spec/payments --recursive --timeout 15000",
-    "test:invoices": "mocha spec/invoices --recursive --timeout 15000",
-    "test:paymentExperience": "mocha spec/paymentExperience --recursive --timeout 15000",
+    "test:integration": "mocha spec --recursive --timeout 30000",
+    "test:payments": "mocha spec/payments --recursive --timeout 30000",
+    "test:invoices": "mocha spec/invoices --recursive --timeout 30000",
+    "test:vaults": "mocha spec/vaults --recursive --timeout 30000",
+    "test:paymentExperience": "mocha spec/paymentExperience --recursive --timeout 30000",
     "test": "npm run test:unit"
   }
 }
