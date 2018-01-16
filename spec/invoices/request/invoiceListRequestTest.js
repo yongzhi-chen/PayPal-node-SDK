@@ -8,12 +8,12 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const InvoiceGetAllRequest = require('../../../lib/paypalrestsdk').InvoiceGetAllRequest;
+const InvoiceListRequest = require('../../../lib/paypalrestsdk').InvoiceListRequest;
 
 
-describe('InvoiceGetAllRequest', function () {
+describe('InvoiceListRequest', function () {
   it('works as expected', function () {
-    let request = new InvoiceGetAllRequest();
+    let request = new InvoiceListRequest();
     request.page(3);
     request.pageSize(7);
     request.totalCountRequired(false);

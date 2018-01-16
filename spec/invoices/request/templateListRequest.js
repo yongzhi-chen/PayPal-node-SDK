@@ -8,12 +8,12 @@
 
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const TemplateGetTemplatesRequest = require('../../../lib/paypalrestsdk').TemplateGetTemplatesRequest;
+const TemplateListRequest = require('../../../lib/paypalrestsdk').TemplateListRequest;
 
 
-describe('TemplateGetTemplatesRequest', function () {
+describe('TemplateListRequest', function () {
   it('works as expected', function () {
-    let request = new TemplateGetTemplatesRequest();
+    let request = new TemplateListRequest();
     request.fields('all');
 
     return client.execute(request).then((r) => {
