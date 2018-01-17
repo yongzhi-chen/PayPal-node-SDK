@@ -3,7 +3,7 @@
 const chai = require('chai');
 const client = require('../../test_harness').client();
 const WebhookGetRequest = require('../../../lib/paypalrestsdk').WebhookGetRequest;
-const WebhookCreate = require('./WebhookCreateTest').WebhookCreate;
+const WebhookCreate = require('./webhookCreateTest').WebhookCreate;
 
 
 describe('WebhookGetRequest', function () {

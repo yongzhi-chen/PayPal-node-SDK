@@ -4,7 +4,7 @@ const chai = require('chai');
 const client = require('../../test_harness').client();
 const WebhookUpdateRequest = require('../../../lib/paypalrestsdk').WebhookUpdateRequest;
 const WebhookGetRequest = require('../../../lib/paypalrestsdk').WebhookGetRequest;
-const WebhookCreate = require('./WebhookCreateTest').WebhookCreate;
+const WebhookCreate = require('./webhookCreateTest').WebhookCreate;
 
 function buildRequestBody(url) {
   return JSON.parse('[ { "op": "replace", "path": "/url", "value": "' + url + '" } ]');

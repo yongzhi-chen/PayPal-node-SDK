@@ -171,7 +171,7 @@ describe('PayPalHttpClient', function () {
       });
 
       return this.http.execute(request).then(() => {
-        this.http.execute(request).then(() => {
+        return this.http.execute(request).then(() => {
           expect(accessTokenNock.isDone()).to.be.true();
         });
       });

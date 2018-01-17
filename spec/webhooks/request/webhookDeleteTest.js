@@ -3,7 +3,7 @@
 const chai = require('chai');
 const client = require('../../test_harness').client();
 const WebhookDeleteRequest = require('../../../lib/paypalrestsdk').WebhookDeleteRequest;
-const WebhookCreate = require('./WebhookCreateTest').WebhookCreate;
+const WebhookCreate = require('./webhookCreateTest').WebhookCreate;
 
 describe('WebhookDeleteRequest', function () {
   it('works as expected', function () {
