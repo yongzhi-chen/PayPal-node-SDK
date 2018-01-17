@@ -15,7 +15,7 @@ function creditCardCreate() {
 }
 
 describe('CreditCardCreateRequest', function () {
-  it.only('works as expected', function () {
+  it('works as expected', function () {
     return creditCardCreate().then((r) => {
       chai.assert.equal(r.statusCode, 201);
       chai.assert.isNotNull(r.result);
