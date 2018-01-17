@@ -3,7 +3,7 @@
 const chai = require('chai');
 const client = require('../../test_harness').client();
 const CreditCardGetRequest = require('../../../lib/paypalrestsdk').CreditCardGetRequest;
-const CreditCardCreate = require('./CreditCardCreateTest').CreditCardCreate;
+const CreditCardCreate = require('./creditCardCreateTest').CreditCardCreate;
 
 
 describe('CreditCardGetRequest', function () {

@@ -4,7 +4,7 @@ const chai = require('chai');
 const client = require('../../test_harness').client();
 const CreditCardUpdateRequest = require('../../../lib/paypalrestsdk').CreditCardUpdateRequest;
 const CreditCardGetRequest = require('../../../lib/paypalrestsdk').CreditCardGetRequest;
-const CreditCardCreate = require('./CreditCardCreateTest').CreditCardCreate;
+const CreditCardCreate = require('./creditCardCreateTest').CreditCardCreate;
 
 function buildRequestBody() {
   return JSON.parse('[ { "op": "add", "path": "/billing_address/line1", "value": "53 N Main St." }]');
