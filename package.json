@@ -38,6 +38,8 @@
     "test:unit": "mocha spec/unit --recursive -r spec/spec_helper",
     "test:integration": "mocha spec --recursive --timeout 30000",
     "test:payments": "mocha spec/payments --recursive --timeout 30000",
+    "test:billingPlans": "mocha spec/billingPlans --recursive --timeout 30000",
+    "test:billingAgreements": "mocha spec/billingAgreements --recursive --timeout 30000",
     "test:invoices": "mocha spec/invoices --recursive --timeout 30000",
     "test:webhooks": "mocha spec/webhooks --recursive --timeout 30000",
     "test:vaults": "mocha spec/vaults --recursive --timeout 30000",
