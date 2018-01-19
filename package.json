@@ -35,6 +35,8 @@
   },
   "license": "MIT",
   "scripts": {
+    "lint": "eslint lib/",
+    "pretest": "npm run lint",
     "test:unit": "mocha spec/unit --recursive -r spec/spec_helper",
     "test:integration": "mocha spec --recursive --timeout 30000",
     "test:payments": "mocha spec/payments --recursive --timeout 30000",

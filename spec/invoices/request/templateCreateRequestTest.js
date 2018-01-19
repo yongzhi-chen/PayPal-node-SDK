@@ -9,6 +9,8 @@
 const chai = require('chai');
 const client = require('../../test_harness').client();
 const TemplateCreateRequest = require('../../../lib/paypalrestsdk').TemplateCreateRequest;
+const TemplateDeleteRequest = require('../../../lib/paypalrestsdk').TemplateDeleteRequest;
+const TemplateListRequest = require('../../../lib/paypalrestsdk').TemplateListRequest;
 
 function buildRequestBody() {
   return {
@@ -52,13 +54,43 @@ function buildRequestBody() {
   };
 }
 
-function templateCreate() {
-    let request = new TemplateCreateRequest();
-    request.requestBody(buildRequestBody());
-
-    return client.execute(request);
+function TemplateList() {
+  let request = new TemplateListRequest();
+  return client.execute(request);
 }
 
+function TemplateDelete(id) {
+  let request = new TemplateDeleteRequest(id);
+  return client.execute(request);
+}
+
+function templateCreate() {
+  let request = new TemplateCreateRequest();
+  request.requestBody(buildRequestBody());
+  return client.execute(request).catch((error) => {
+      if (error.message.indexOf('Exceed maximum number of templates.') > -1) {
+        console.error("Reached maximum limit. Will try to remove all existing templates");
+        return deleteAllTemplates().then((r) => {
+          return templateCreate();
+        })
+      } else {
+        throw error;
+      }
+  });
+}
+
+function deleteAllTemplates() {
+  return TemplateList().then((r) => {
+      let templates = r.result.templates;
+      templates.forEach((template) => {
+        return TemplateDelete(template.template_id).then((r) => {
+          // ignoring
+        }).catch((error) => {
+          // ignoring
+        });
+      });
+  });
+}
 describe('TemplateCreateRequest', function () {
   it('works as expected', function () {
     return templateCreate().then((templateCreateResp) => {
