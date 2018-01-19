@@ -46,6 +46,7 @@
     "test:webhooks": "mocha spec/webhooks --recursive --timeout 30000",
     "test:vaults": "mocha spec/vaults --recursive --timeout 30000",
     "test:paymentExperience": "mocha spec/paymentExperience --recursive --timeout 30000",
+    "test:identity": "mocha spec/identity --recursive --timeout 30000",
     "test": "npm run test:unit"
   }
 }
