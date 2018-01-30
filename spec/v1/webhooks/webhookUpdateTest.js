@@ -1,9 +1,11 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const WebhookUpdateRequest = require('../../../lib/paypalrestsdk').WebhookUpdateRequest;
-const WebhookGetRequest = require('../../../lib/paypalrestsdk').WebhookGetRequest;
+const WebhookUpdateRequest = paypal.v1.webhooks.WebhookUpdateRequest;
+const WebhookGetRequest = paypal.v1.webhooks.WebhookGetRequest;
 const WebhookCreate = require('./webhookCreateTest').WebhookCreate;
 
 function buildRequestBody(url) {

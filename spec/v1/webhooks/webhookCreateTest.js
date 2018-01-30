@@ -1,10 +1,12 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const WebhookCreateRequest = require('../../../lib/paypalrestsdk').WebhookCreateRequest;
-const WebhookDeleteRequest = require('../../../lib/paypalrestsdk').WebhookDeleteRequest;
-const WebhookListRequest = require('../../../lib/paypalrestsdk').WebhookListRequest;
+const WebhookCreateRequest = paypal.v1.webhooks.WebhookCreateRequest;
+const WebhookDeleteRequest = paypal.v1.webhooks.WebhookDeleteRequest;
+const WebhookListRequest = paypal.v1.webhooks.WebhookListRequest;
 
 function buildRequestBody() { 
   //URL needs to be unique so just generating a random one

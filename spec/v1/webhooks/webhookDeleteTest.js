@@ -1,8 +1,10 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const WebhookDeleteRequest = require('../../../lib/paypalrestsdk').WebhookDeleteRequest;
+const WebhookDeleteRequest = paypal.v1.webhooks.WebhookDeleteRequest;
 const WebhookCreate = require('./webhookCreateTest').WebhookCreate;
 
 describe('WebhookDeleteRequest', function () {

@@ -1,8 +1,10 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const AvailableEventTypeListRequest = require('../../../lib/paypalrestsdk').AvailableEventTypeListRequest;
+const AvailableEventTypeListRequest = paypal.v1.webhooks.AvailableEventTypeListRequest;
 
 describe('AvailableEventTypeListRequest', function () {
   it('works as expected', function () {
