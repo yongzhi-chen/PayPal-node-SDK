@@ -2,6 +2,7 @@
 
 let chai = require('chai');
 let dirtyChai = require('dirty-chai');
+global.paypal = require('../lib/lib');
 
 chai.use(dirtyChai);
 

@@ -39,14 +39,14 @@
     "pretest": "npm run lint",
     "test:unit": "mocha spec/unit --recursive -r spec/spec_helper",
     "test:integration": "mocha spec --recursive --timeout 60000",
-    "test:payments": "mocha spec/payments --recursive --timeout 60000",
-    "test:billingPlans": "mocha spec/billingPlans --recursive --timeout 60000",
-    "test:billingAgreements": "mocha spec/billingAgreements --recursive --timeout 60000",
-    "test:invoices": "mocha spec/invoices --recursive --timeout 60000",
-    "test:webhooks": "mocha spec/webhooks --recursive --timeout 60000",
-    "test:vaults": "mocha spec/vaults --recursive --timeout 60000",
-    "test:paymentExperience": "mocha spec/paymentExperience --recursive --timeout 60000",
-    "test:identity": "mocha spec/identity --recursive --timeout 60000",
+    "test:payments": "mocha spec/v1/payments --recursive --timeout 60000",
+    "test:billingPlans": "mocha spec/v1/billingPlans --recursive --timeout 60000",
+    "test:billingAgreements": "mocha spec/v1/billingAgreements --recursive --timeout 60000",
+    "test:invoices": "mocha spec/v1/invoices --recursive --timeout 60000",
+    "test:webhooks": "mocha spec/v1/webhooks --recursive --timeout 60000",
+    "test:vaults": "mocha spec/v1/vaults --recursive --timeout 60000",
+    "test:paymentExperience": "mocha spec/v1/paymentExperience --recursive --timeout 60000",
+    "test:identity": "mocha spec/v1/identity --recursive --timeout 60000",
     "test": "npm run test:unit"
   }
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 const braintreehttp = require('braintreehttp');
-const paypal = require('../lib/paypalrestsdk');
+const paypal = require('../lib/lib').core;
 
 function client() {
   return new paypal.PayPalHttpClient(environment());
