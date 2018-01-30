@@ -1,9 +1,11 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const CreditCardUpdateRequest = require('../../../lib/paypalrestsdk').CreditCardUpdateRequest;
-const CreditCardGetRequest = require('../../../lib/paypalrestsdk').CreditCardGetRequest;
+const CreditCardUpdateRequest = paypal.v1.vault.CreditCardUpdateRequest;
+const CreditCardGetRequest = paypal.v1.vault.CreditCardGetRequest;
 const CreditCardCreate = require('./creditCardCreateTest').CreditCardCreate;
 
 function buildRequestBody() {

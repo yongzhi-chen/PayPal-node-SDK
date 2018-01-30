@@ -1,8 +1,10 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const CreditCardDeleteRequest = require('../../../lib/paypalrestsdk').CreditCardDeleteRequest;
+const CreditCardDeleteRequest = paypal.v1.vault.CreditCardDeleteRequest;
 const CreditCardCreate = require('./creditCardCreateTest').CreditCardCreate;
 
 describe('CreditCardDeleteRequest', function () {

@@ -1,10 +1,11 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const CreditCardGetRequest = require('../../../lib/paypalrestsdk').CreditCardGetRequest;
+const CreditCardGetRequest = paypal.v1.vault.CreditCardGetRequest;
 const CreditCardCreate = require('./creditCardCreateTest').CreditCardCreate;
-
 
 describe('CreditCardGetRequest', function () {
   it('works as expected', function () {
