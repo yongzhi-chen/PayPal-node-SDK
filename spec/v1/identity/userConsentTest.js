@@ -1,13 +1,16 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
 const environment = require('../../test_harness').environment();
-const UserConsent = require('../../../lib/paypalrestsdk').UserConsent;
-const RefreshTokenRequest = require('../../../lib/paypalrestsdk').RefreshTokenRequest;
+const UserConsent = paypal.v1.identity.UserConsent;
+const RefreshTokenRequest = paypal.core.RefreshTokenRequest;
 
 describe('UserConsent', function () {
   it('generates consent url correctly', function () {
+    console.log(typeof(UserConsent));
     let userConsentUrl = new UserConsent(environment)
                           .responseType('code')
                           .scope('profile+email+openid+phone+address+https%3A%2F%2Furi.paypal.com%2Fservices%2Fpaypalattributes')
