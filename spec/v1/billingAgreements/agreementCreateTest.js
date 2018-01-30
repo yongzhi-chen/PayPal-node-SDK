@@ -1,10 +1,12 @@
 'use strict';
 
+require('../../spec_helper');
+
+const AgreementCreateRequest = paypal.v1.billingAgreements.AgreementCreateRequest;
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const AgreementCreateRequest = require('../../../lib/paypalrestsdk').AgreementCreateRequest;
-const PlanCreate = require('../../billingPlans/request/planCreateTest').PlanCreate;
-const PlanActivate = require('../../billingPlans/request/planUpdateTest').PlanActivate;
+const PlanCreate = require('../billingPlans/planCreateTest').PlanCreate;
+const PlanActivate = require('../billingPlans/planUpdateTest').PlanActivate;
 
 function buildRequestBody(planId) {
   return {
@@ -64,4 +66,5 @@ describe('AgreementCreateRequest', function () {
 
 module.exports = {
   AgreementCreate: agreementCreate
-}
+};
+
