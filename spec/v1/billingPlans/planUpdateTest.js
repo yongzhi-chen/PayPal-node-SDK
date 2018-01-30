@@ -1,10 +1,12 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const PlanUpdateRequest = require('../../../lib/paypalrestsdk').PlanUpdateRequest;
-const PlanGetRequest = require('../../../lib/paypalrestsdk').PlanGetRequest;
 const PlanCreate = require('./planCreateTest').PlanCreate;
+const PlanUpdateRequest = paypal.v1.billingPlans.PlanUpdateRequest;
+const PlanGetRequest = paypal.v1.billingPlans.PlanGetRequest;
 
 function buildRequestBody() {
     return [{

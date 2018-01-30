@@ -1,8 +1,10 @@
 'use strict';
 
+require('../../spec_helper');
+
+const PlanCreateRequest = paypal.v1.billingPlans.PlanCreateRequest;
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const PlanCreateRequest = require('../../../lib/paypalrestsdk').PlanCreateRequest;
 
 function buildRequestBody() {
   return {
@@ -57,4 +59,4 @@ describe('PlanCreateRequest', function () {
 
 module.exports = {
   PlanCreate: planCreate
-}
+};
