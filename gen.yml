@@ -3,3 +3,4 @@ language: nodejs
 sourcePath: lib
 testPath: spec
 projectName: paypalrestsdk
+apiVersioning: true
