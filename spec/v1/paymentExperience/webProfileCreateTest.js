@@ -1,8 +1,10 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const WebProfileCreateRequest = require('../../../lib/paypalrestsdk').WebProfileCreateRequest;
+const WebProfileCreateRequest = paypal.v1.paymentExperience.WebProfileCreateRequest;
 
 function buildRequestBody() {
   //Name needs to be unique so just generating a random one

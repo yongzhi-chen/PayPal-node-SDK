@@ -1,8 +1,10 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const WebProfileListRequest = require('../../../lib/paypalrestsdk').WebProfileListRequest;
+const WebProfileListRequest = paypal.v1.paymentExperience.WebProfileListRequest;
 const WebProfileCreate = require('./webProfileCreateTest').WebProfileCreate;
 
 

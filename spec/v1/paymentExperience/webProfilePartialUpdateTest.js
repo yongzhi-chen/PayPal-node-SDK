@@ -1,9 +1,11 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const WebProfilePartialUpdateRequest = require('../../../lib/paypalrestsdk').WebProfilePartialUpdateRequest;
-const WebProfileGetRequest = require('../../../lib/paypalrestsdk').WebProfileGetRequest;
+const WebProfilePartialUpdateRequest = paypal.v1.paymentExperience.WebProfilePartialUpdateRequest;
+const WebProfileGetRequest = paypal.v1.paymentExperience.WebProfileGetRequest;
 const WebProfileCreate = require('./webProfileCreateTest').WebProfileCreate;
 
 function buildRequestBody() {

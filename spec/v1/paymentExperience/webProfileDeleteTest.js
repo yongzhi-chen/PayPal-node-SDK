@@ -1,8 +1,10 @@
 'use strict';
 
+require('../../spec_helper');
+
 const chai = require('chai');
 const client = require('../../test_harness').client();
-const WebProfileDeleteRequest = require('../../../lib/paypalrestsdk').WebProfileDeleteRequest;
+const WebProfileDeleteRequest = paypal.v1.paymentExperience.WebProfileDeleteRequest;
 const WebProfileCreate = require('./webProfileCreateTest').WebProfileCreate;
 
 describe('WebProfileDeleteRequest', function () {
