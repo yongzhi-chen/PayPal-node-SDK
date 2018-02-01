@@ -6,9 +6,10 @@ This is a preview of how PayPal SDKs will look in the next major version. We've 
 
 ```node
 const paypal = require('paypal-rest-sdk');
+const payments = paypal.v1.payments;
 
-let env = new paypal.SandboxEnvironment('AdV4d6nLHabWLyemrw4BKdO9LjcnioNIOgoz7vD611ObbDUL0kJQfzrdhXEBwnH8QmV-7XZjvjRWn0kg', 'EPKoPC_haZMTq5uM9WXuzoxUVdgzVqHyD5avCyVC1NCIUJeVaNNUZMnzduYIqrdw-carG9LBAizFGMyK');
-let client = new paypal.PayPalHttpClient(env);
+let env = new paypal.core.SandboxEnvironment('AdV4d6nLHabWLyemrw4BKdO9LjcnioNIOgoz7vD611ObbDUL0kJQfzrdhXEBwnH8QmV-7XZjvjRWn0kg', 'EPKoPC_haZMTq5uM9WXuzoxUVdgzVqHyD5avCyVC1NCIUJeVaNNUZMnzduYIqrdw-carG9LBAizFGMyK');
+let client = new paypal.core.PayPalHttpClient(env);
 
 let payment = {
   "intent": "sale",
@@ -28,7 +29,7 @@ let payment = {
 };
 
 
-let request = new paypal.PaymentCreateRequest();
+let request = new payments.PaymentCreateRequest();
 request.requestBody(payment);
 
 client.execute(request).then((response) => {

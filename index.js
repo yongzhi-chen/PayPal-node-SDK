@@ -1,3 +1,3 @@
 'use strict'
 
-module.exports = require('./lib/paypalrestsdk');
+module.exports = require('./lib/lib');

@@ -13,8 +13,10 @@ paypal.configure({
 
 #### AFTER
 ```js
-let env = new paypal.SandboxEnvironment('your_client_id', 'your_client_secret');
-let client = new paypal.PayPalHttpClient(env);
+const paypal = require('paypal-rest-sdk');
+
+let env = new paypal.core.SandboxEnvironment('your_client_id', 'your_client_secret');
+let client = new paypal.core.PayPalHttpClient(env);
 ```
 
 # 2. Make a call
@@ -42,6 +44,8 @@ paypal.payment.create(create_payment_json, function (error, payment) {
 
 #### AFTER
 ```js
+const payments = paypal.v1.payments;
+
 var create_payment_json = {
     "intent": "sale",
     "payer": {
@@ -50,7 +54,7 @@ var create_payment_json = {
     ...
 };
 
-let request = new paypal.PaymentCreateRequest();
+let request = new payments.PaymentCreateRequest();
 request.requestBody(create_payment_json);
 
 client.execute(request).then((response) => {

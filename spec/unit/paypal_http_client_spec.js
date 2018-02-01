@@ -1,6 +1,6 @@
 'use strict';
 
-const paypal = require('../../lib/paypalrestsdk');
+const paypal = require('../../lib/lib').core;
 const nock = require('nock');
 
 describe('PayPalHttpClient', function () {

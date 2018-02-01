@@ -26,10 +26,11 @@ For e.g.
 
 ```js
 const paypal = require('paypal-rest-sdk');
+const invoices = paypal.v1.invoices;
 
-let env = new paypal.SandboxEnvironment('YOUR_CLIENT_ID', 'YOUR_CLIENT_SECRET');
+let env = new paypal.core.SandboxEnvironment('YOUR_CLIENT_ID', 'YOUR_CLIENT_SECRET');
 
-let client = new paypal.PayPalHttpClient(env);
+let client = new paypal.core.PayPalHttpClient(env);
 
 // Sample function to help you retry
 function tryAtMost(tries, executor) {
@@ -39,7 +40,7 @@ function tryAtMost(tries, executor) {
     .catch(err => tries > 0 ? tryAtMost(tries, executor) : Promise.reject(err));
 }
 
-let request = new paypal.InvoiceCreateRequest();
+let request = new invoices.InvoiceCreateRequest();
 // It is recommended to set `PayPal-Request-Id` header to ensure idempotency on retries.
 request.headers['PayPal-Request-ID'] = "abcd-request-id";
 request.requestBody(invoiceBody);
