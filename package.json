@@ -40,6 +40,7 @@
     "test:unit": "mocha spec/unit --recursive -r spec/spec_helper",
     "test:integration": "mocha spec --recursive --timeout 60000",
     "test:payments": "mocha spec/v1/payments --recursive --timeout 60000",
+    "test:customerDisputes": "mocha spec/v1/customerDisputes --recursive --timeout 60000",
     "test:billingPlans": "mocha spec/v1/billingPlans --recursive --timeout 60000",
     "test:billingAgreements": "mocha spec/v1/billingAgreements --recursive --timeout 60000",
     "test:invoices": "mocha spec/v1/invoices --recursive --timeout 60000",
