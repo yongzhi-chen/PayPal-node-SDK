@@ -1,6 +1,11 @@
 PayPal Node SDK release notes
 =============================
 
+v2.0.0-rc2
+------
+* Update to latest Payments code.
+* Support for Customer Disputes in Limited Release (API subject to change).
+
 v2.0.0-rc1
 ------
 * Promoting last beta to release candidate.
